@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRÍ TUỆ NHÂN TẠO</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="bootstrap/jquery.js"></script>
+
+</head>
+<body class="p-3 mb-2 bg-dark-subtle shadow p-3 mb-5 bg-body-tertiary rounded" style="width: 1024px; margin: auto;">
+    <header class="bg-body-secondary">
+        <div id="div_1" class="container text-center">
+            <h1 class="display-3 mb-5"><strong>TRÍ TUỆ NHÂN TẠO</strong></h1>
+            <div class="container px-4 text-center">
+                <div>
+                    <label>
+                        <p class="h3"><strong>Chọn cách truyền dữ liệu:</strong> </p>
+                        <select id="type_of_data" class="form-select form-select-lg mb-3" aria-label="Large select example">
+                            <option value="write"> Write </option>
+                            <option value="file"> File </option>
+                        </select>
+                        <br>
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <p class="h3"> <strong>Chọn thuật toán:</strong> </p>
+                        <select id="math" class="form-select form-select-lg mb-3" aria-label="Large select example">
+                            <option value="A*"> A* </option>
+                            <option value="Leo_doi"> Hill Climbing </option>
+                            <option value="UCS"> UCS </option>
+                            <option value="Gready"> Gready </option>                    
+                        </select>
+                        <br>
+                    </label>
+                </div>
+            </div>
+         </div>    
+    </header>
+    
+    <main class="p-3 mb-2 bg-body-secondary text-secondary-emphasis">
+        <div id="div_2">     
+            <form class="mb-3">   
+                <div class="w-50 p-3">
+                    <p class="h2"> <strong>Nhập số đỉnh, số cung</strong> </p>
+                    <div class="form-floating mb-3">
+                        <input type="number" id="so_dinh" id="floatingInput" class="form-control" placeholder="number">
+                        <label for="floatingInput" for="autoSizingInput">Số đỉnh</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" id="so_cung" id="floatingInput" class="form-control" placeholder="number">
+                        <label for="floatingInput">Số cung</label>
+                    </div>
+                </div>       
+                <div class="w-50 p-3">
+                    <p class="h2"><strong>Nhập nơi bắt đầu và kết thúc</strong> </p>
+                    <div class="form-floating mb-3">
+                        <input type="number" id="begin" id="floatingInput" class="form-control" placeholder="number">
+                        <label for="floatingInput">Bắt đầu</label>
+                    </div>
+    
+                    <div class="form-floating mb-3">
+                        <input type="number" id="end" id="floatingInput" class="form-control" placeholder="number">
+                        <label for="floatingInput">Kết thúc</label>
+                    </div>
+                </div>
+                <div id="div_h">
+                    <p class="h4"><strong>Danh sách heuristic</strong> </p>
+                    <div class="shadow p-3 mb-5 bg-body-tertiary rounded d-inline-block">                    
+                        <table id="table_h" class="table">
+                            <tr>
+                                <th>Đỉnh</th>
+                                <th>Khoảng cách (heuristic)</th>
+                            </tr>                    
+                        </table>
+                    </div>
+                </div>
+                                
+                <div id="div_g">
+                    <p class="h4"> <strong>Danh sách cung</strong> </p>
+                    <div class="shadow p-3 mb-5 bg-body-tertiary rounded d-inline-block" >                    
+                        <table id="table_not_g" class="table">
+                            <tr>
+                                <th>Từ</th>
+                                <th>Đến</th>
+                            </tr>                   
+                        </table>
+                        <table id="table_g" class="table">
+                                <tr>
+                                    <th>Từ</th>
+                                    <th>Đến</th>
+                                    <th>Khoảng cách (g)</th>
+                                </tr>                   
+                            </table>
+                    </div>
+                </div>
+                
+                <div class="col-auto" class="d-inline-flex gap-1">
+                    <button id="submit" type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Submit</button>
+                </div>                     
+            </form>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <table id="table_result1" class="table">
+                        <tr>
+                            <th>STT</th>
+                            <th>X</th>              
+                            <th>OPEN</th>
+                            <th>CLOSE</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    
+        <div id="div_3">
+            <p class="h3"><strong>Upload file</strong> </p> 
+            <input class="form-control" type="file" id="file">
+            <p id = "print_file"></p>
+            <div class="col-auto d-inline-flex gap-1 mb-3">
+                <button id="submit1" type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Submit</button>
+            </div>  
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <table id="table_result2" class="table">
+                        <tr>
+                            <th>STT</th>
+                            <th>X</th>              
+                            <th>OPEN</th>
+                            <th>CLOSE</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>      
+        </div> 
+        <div id="wayToGoal"></div>
+        <div id="cost_result"></div>
+
+        
+    </main>
+    
+    <button id="reset_2" class="btn btn-secondary"> Reset</button>        
+
+    <script src="display.js"></script>
+    <script src="Leo_doi.js"></script>
+    <script src="aStar.js"></script>
+</body>
+</html>
