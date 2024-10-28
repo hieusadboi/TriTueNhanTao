@@ -320,22 +320,31 @@ function astar() {
         let neighbors = find_open(matrix, currentNode.to);
         for (let neighbor of neighbors) {
             let gNew = currentNode.g + neighbor.g;  // g mới cho neighbor
-
-            if (closedList.includes(neighbor)) {
-                if (gNew < neighbor.g) {
-                    neighbor.g = gNew;
-                    neighbor.f = neighbor.g + neighbor.h;
-                    neighbor.parent = currentNode;
-
-                    closedList = closedList.filter(node => node !== neighbor);
-                    openList.push(neighbor);
-                }
+            let fNew = gNew + neighbor.h;  // f mới cho neighbor
+        
+            // Tìm nếu đã tồn tại một nút đến `neighbor.to` trong closedList với giá trị g lớn hơn
+            let closedNode = closedList.find(node => node.to === neighbor.to);
+            if (closedNode && gNew < closedNode.g) {
+                closedList = closedList.filter(node => node.to !== neighbor.to);
+                neighbor.g = gNew;
+                neighbor.f = fNew;
+                neighbor.parent = currentNode;
+                openList.push(neighbor);
                 continue;
             }
-
-            if (!openList.includes(neighbor)) {
+        
+            // Tìm nếu đã tồn tại một nút đến `neighbor.to` trong openList với giá trị g lớn hơn
+            let openNode = openList.find(node => node.to === neighbor.to);
+            if (openNode) {
+                if (gNew < openNode.g) {
+                    openNode.g = gNew;
+                    openNode.f = fNew;
+                    openNode.parent = currentNode;
+                }
+            } else {
+                // Nếu chưa tồn tại trong openList, thêm vào với g và f mới
                 neighbor.g = gNew;
-                neighbor.f = neighbor.g + neighbor.h;
+                neighbor.f = fNew;
                 neighbor.parent = currentNode;
                 openList.push(neighbor);
             }
@@ -345,7 +354,6 @@ function astar() {
     console.log("Đường đi: ", path);
     return path;
 }
-
 
 // Hàm để hiển thị đường đi
 let way_goal1 = (path) => {
