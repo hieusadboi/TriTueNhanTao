@@ -1,7 +1,7 @@
 let reset_2 = document.getElementById("reset_2");
 let table_h = document.getElementById("table_h");
-let table_g = document.getElementById("table_g");
-let table_not_g = document.getElementById("table_not_g");
+let table_g = document.getElementById("table_g_dis");
+let table_not_g = document.getElementById("table_not_g_dis");
 let div_h = document.getElementById("div_h");
 
 div_2.style.display = 'block';
@@ -46,15 +46,18 @@ const input_top =  document.getElementById("so_dinh");
 function changeTableInput_Top () {
     let table_h = document.getElementById("table_h");
     let dinh = document.getElementById("so_dinh").value;
+    table_h.innerHTML = "";
     for (let i = 0; i<dinh; i++){
         table_h.innerHTML +=
             `<tr>
                 <td><input type="text" name="dinh" class="form-control"></td>
                 <td><input type="number" name="khoang_cach_h" class="form-control"></td>
             </tr>`
-    }   
+    }       
 }
-input_top.addEventListener("change", changeTableInput_Top, {once : true});
+// input_top.removeEventListener("change", changeTableInput_Top);
+input_top.addEventListener("change", changeTableInput_Top);
+
 
 const input_road =  document.getElementById("so_cung");
 function changeTableInput_Road () {
@@ -63,6 +66,7 @@ function changeTableInput_Road () {
     let cung = document.getElementById("so_cung").value;
     let math = document.getElementById("math").value;
     if (math === "Gready" || math === "Leo_doi"){
+        table_not_g.innerHTML ="";
         for(let i = 0; i<cung; i++){
             table_not_g.innerHTML +=
                 `<tr>
@@ -72,6 +76,7 @@ function changeTableInput_Road () {
         }
     }
     else{
+        table_g.innerHTML =""
         for(let i = 0; i<cung; i++){
             table_g.innerHTML +=
                 `<tr>
@@ -83,10 +88,10 @@ function changeTableInput_Road () {
     }
     
 }
-input_road.addEventListener("change", changeTableInput_Road, {once : true});
+input_road.addEventListener("change", changeTableInput_Road);
 
 
 let reset_2_click = () => {
     location.reload();
 }
-reset_2.addEventListener("click", reset_2_click);
+reset_2.addEventListener("click", reset_2_click);   

@@ -1,10 +1,9 @@
-
 let submit = document.getElementById("submit");
 let submit1 = document.getElementById("submit1");
 let type_of_data = document.getElementById("type_of_data").value;
- 
 
-function get_data_h (){
+
+function get_data_h1 (){
     let so_dinh = document.getElementById("so_dinh").value;
     let ds_dinh = document.getElementsByName("dinh");
     let heuristic = document.getElementsByName("khoang_cach_h");
@@ -16,11 +15,11 @@ function get_data_h (){
     return h;
 }
 
-function get_matrix (){
+function get_matrix1 (){
     let so_cung = document.getElementById("so_cung").value;
     let from = document.getElementsByName("tu");
     let to = document.getElementsByName("den");
-    let h = get_data_h();
+    let h = get_data_h1();
     let matrix = [];
     for (let i = 0; i< so_cung; i++ ){
         matrix[i] = {
@@ -33,7 +32,7 @@ function get_matrix (){
     return matrix;
 }
 
-function find_open (matrix, start) {
+function find_open1 (matrix, start) {
     let Open_List = [];
     let j = 0;
     for (let i = 0; i< matrix.length; i++){
@@ -45,12 +44,16 @@ function find_open (matrix, start) {
     return Open_List;
 }
 
-function find_node_min (Open_List){
-    let A = Open_List[0];
-    for(let i = 1; i<Open_List.length; i++){
-        if (Open_List[i].h <= A.h){
-            A = Open_List[i];
-        }
+function find_node_min1 (Open_List, B){
+    let A = B;
+    console.log(A);
+    for(let i = 0; i<Open_List.length; i++){
+      if (Open_List[i].h <= A.h){
+        A = Open_List[i];
+      }
+    }
+    if(A.to === B.to && A.from === B.from){
+      return B;
     }
     return A;
 }
@@ -66,7 +69,7 @@ let graphObj = {};  // Biến để lưu đối tượng đồ thị
         let print_file = document.getElementById("print_file");
         print_file.innerText = fileContent;
         // Chuyển đổi nội dung tệp sang đối tượng
-        graphObj = parseGraph(fileContent);
+        graphObj = parseGraph1(fileContent);
         console.log(graphObj);  // Hiển thị đối tượng trong console
       };
       reader.readAsText(file);
@@ -76,9 +79,9 @@ let graphObj = {};  // Biến để lưu đối tượng đồ thị
   });
 
 //Hàm để chuyển đổi nội dung tệp sang đối tượng
-function parseGraph(text) {
+function parseGraph1(text) {
     let lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-    
+
     let graph = {
       vertices: 0,
       edges: 0,
@@ -87,7 +90,7 @@ function parseGraph(text) {
       heuristics: {},
       adjacencyList: []
     };
-    
+
     lines.forEach((line, index) => {
       if (index === 0) {
         // Đọc số lượng đỉnh và cung
@@ -116,73 +119,111 @@ function parseGraph(text) {
 
 let path;
 
-function Leo_doi (){
-  let start;
-  let end;
+function max(a, b) {
+  if(a>b) return a;
+  return b;
+}
+
+function find_end_in_close1(end, close){
+  for (let i = 0; i<close.length; i++){
+    if (close[i].to === end || close[i].from === end){
+      return true;
+    }
+  }
+  return false;
+}
+
+let start1;
+let end1;
+let Close_List1;
+function Leo_doi () {  
   let table;
-  let type_of_data = document.getElementById("type_of_data").value;  
+  let type_of_data = document.getElementById("type_of_data").value;
   let matrix;
   path = [];
-  if (type_of_data === "write"){
+  
+  if (type_of_data === "write") {
     table = document.getElementById("table_result1");
-    start = document.getElementById("begin").value;
-    end = document.getElementById("end").value;
-    matrix =  get_matrix();
-  }
-  else{
+    start1 = document.getElementById("begin").value;
+    end1 = document.getElementById("end").value;
+    matrix = get_matrix1();
+    var h_start = get_data_h1()[start1]; // Lấy giá trị heuristic của start từ dữ liệu nhập tay
+  } else {
     table = document.getElementById("table_result2");
-    start = graphObj.start;
-    end = graphObj.end;
+    start1 = graphObj.start;
+    end1 = graphObj.end;
     matrix = graphObj.adjacencyList;
-  }    
-  if (start === end){ 
-      table.innerHTML += 
-      `<tr>
-          <td>0</td>
-          <td>${start}</td>
-          <td>(${start}, 0, ${end})</td>
-          <td>${start}</td>
-      </tr>
-      `
-      path.push(start);
-      path.push(end);
+    var h_start = graphObj.heuristics[start1]; // Lấy giá trị heuristic của start từ file
   }
-  else {
-      let i = 0;
-      let Open_List = find_open(matrix, start);
-      let A = find_node_min(Open_List);   
-      path.push(A.from);
-      A.check = 1;
-      while ((A.to != end || A.from != end) && Open_List.length != 0){
-        console.log(Open_List);
-          for (let j = 0; j<Open_List.length; j++){
-              if (j === 0){
-                  table.innerHTML += 
-                  `<tr>
-                      <td>${i+1}</td>
-                      <td>(${A.from})</td>
-                      <td>(${Open_List[j].from}, ${Open_List[j].h}, ${Open_List[j].to})</td>
-                      <td>(${A.from})</td>
-                  </tr>`
-              }
-              else {
-                  table.innerHTML += 
-                  `<tr>
-                      <td></td>
-                      <td></td>
-                      <td>(${Open_List[j].from}, ${Open_List[j].h}, ${Open_List[j].to})</td>
-                      <td></td>
-                  </tr>`
-              }                    
-          }           
-          path.push(A.to);
-          Open_List = find_open(matrix, A.to);
-          A = find_node_min(Open_List);
-          A.check = 1;
-          i++;
+  console.log(matrix); 
+  // Hiển thị đỉnh khởi tạo là đỉnh start và heuristic h của nó
+  table.innerHTML += 
+  `<tr>
+      <td>Khởi Tạo</td>
+      <td>${start1}</td>
+      <td>from: ${start1}, h: ${h_start}</td>
+      <td></td>
+  </tr>`;
+  
+  if (start1 === end1) {
+    path.push(start1);
+    path.push(end1);
+  } else {
+    let i = 0;
+    let Open_List = find_open1(matrix, start1);
+    let A = find_node_min1(Open_List, Open_List[0]);
+    path.push(A.from);
+    A.check = 1;
+    Close_List1 = [];
+    Close_List1.push(A);
+    console.log(Close_List1);
+
+    while ((A.to != end1 && A.from != end1) && Open_List.length != 0) {      
+      const openListdisplay = Open_List.map(node => 
+        `From: ${node.from}, To: ${node.to}, h: ${node.h}`
+      ).join("<br>");
+
+      const closedListdisplay = Close_List1.map(node => 
+        `From: ${node.from}, To: ${node.to}, h: ${node.h}`
+      ).join("<br>");
+
+      const row = `
+          <tr>
+              <td>${i}</td>
+              <td>${A.from}</td>
+              <td>${openListdisplay}</td>
+              <td>${closedListdisplay}</td>
+          </tr>
+      `;
+      table.innerHTML += row;
+
+      path.push(A.to);
+      Open_List = find_open1(matrix, A.to);
+      let B = A;
+      A = find_node_min1(Open_List, B);      
+      if(A.to === B.to && A.from === B.from){
+        const openListdisplay = Open_List.map(node => 
+          `From: ${node.from}, To: ${node.to}, h: ${node.h}`
+        ).join("<br>");
+        const row = `
+          <tr>
+              <td>${i+1}</td>
+              <td>${B.to}</td>
+              <td>${openListdisplay}</td>
+              <td></td>
+          </tr>
+        `;
+        table.innerHTML += row;
+        break;
       }
+      A.check = 1;
+      Close_List1.push(A);
+      i++;
+    }
   }
+   
 }
+
 
 let submit1_click = () =>{
   let thuat_toan = document.getElementById("math").value;
@@ -190,7 +231,6 @@ let submit1_click = () =>{
     Leo_doi();
   }      
 }
-
 submit1.addEventListener("click", submit1_click);
 submit.addEventListener("click", submit1_click);
 
@@ -198,10 +238,19 @@ let way_goal = () => {
   let thuat_toan = document.getElementById("math").value;
   if(thuat_toan === "Leo_doi"){
     let way = document.getElementById("wayToGoal");
-    way.innerHTML = 
-    `<p>
-      <strong>Đường đi là: ${path.join(' -> ')}</strong> 
-    </p>`;
+    if(find_end_in_close1(end1, Close_List1)){
+      way.innerHTML = 
+        `<p>
+          <strong>Đường đi là: ${path.join(' -> ')}</strong> 
+        </p>`;
+    }
+    else {
+      way.innerHTML = 
+        `<p>
+          <strong>Không có đường đi từ ${start1} đến ${end1}</strong> 
+        </p>`;
+    }   
+    
   }    
 }
 submit1.addEventListener("click",way_goal);

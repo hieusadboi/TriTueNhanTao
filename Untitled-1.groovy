@@ -252,7 +252,10 @@ function astar() {
         pt = 1;
     }
 
+    // Tính giá trị heuristic của điểm bắt đầu
     const hStart = h[start];
+
+
     table.innerHTML = `
         <tr>
             <th>STT</th>
@@ -262,7 +265,7 @@ function astar() {
         </tr>
     `;
 
-    print_initial_step(start, hStart, pt);
+    print_initial_step(start, hStart, pt); 
     console.log("Bắt đầu từ: ", start, "Kết thúc tại: ", end);
 
     if (start === end) {
@@ -271,92 +274,87 @@ function astar() {
             `<strong>Chi phí từ ${start} đến ${end} là: 0</strong>`;
         document.getElementById("wayToGoal").innerHTML = 
             `<p><strong>Đường đi là: ${start}</strong></p>`;
-        return [start];
+        return [start];  // Trả về đường đi là chính nó
     }
 
     let openList = []; 
-    let closedList = [];
-    let isLastStep = false;
+    let closedList = []; 
+    let isLastStep = false
 
+    // Khởi tạo danh sách mở với các đỉnh từ điểm bắt đầu
     let startNodes = matrix.filter(node => node.from === start);
     if (startNodes.length === 0) {
         console.error("Không tìm thấy đỉnh bắt đầu trong ma trận.");
         return;
     }
 
-    openList.push(...startNodes); 
+    openList.push(...startNodes); // Thêm các đỉnh thực sự từ điểm bắt đầu vào danh sách mở
     let step = 1;
 
     while (openList.length > 0) {
+        // Tìm đỉnh có f nhỏ nhất trong danh sách mở
         let currentNode = find_node_min(openList);
         console.log("Đỉnh hiện tại: ", currentNode);
-    
-        print_step_details(step, currentNode, openList, closedList, false, pt);
+
+        // In chi tiết bước hiện tại
+        print_step_details(step, currentNode, openList, closedList, pt);
         step++;
 
+        // Nếu đã đến đỉnh đích
         if (currentNode.to === end) {
             let tempNode = currentNode;
-            isLastStep = true;
-            
+            console.log(currentNode.from)
+            console.log(currentNode.to)
+            isLastStep = true
             while (tempNode) {
                 path.unshift(tempNode.to);
                 tempNode = tempNode.parent;
             }
-            path.unshift(start);
-    
+            path.unshift(start); // Đảm bảo đỉnh bắt đầu có trong đường đi
+
             openList = openList.filter(node => node !== currentNode);
             closedList.push(currentNode);
-            
+            // Cập nhật bảng với bước cuối cùng
+            console.log(isLastStep)
             print_step_details(step, currentNode, openList, closedList, isLastStep, pt);
-    
+
+            // Hiển thị chi phí g cuối cùng
             document.getElementById("cost_result").innerHTML = 
                 `<strong>Chi phí từ ${start} đến ${end} là: ${currentNode.g}</strong>`;
             break;
         }
 
+        // Chuyển đỉnh hiện tại từ danh sách mở sang danh sách đóng
         openList = openList.filter(node => node !== currentNode);
         closedList.push(currentNode);
 
+        // Tìm tất cả các đỉnh láng giềng của đỉnh hiện tại
         let neighbors = find_open(matrix, currentNode.to);
         for (let neighbor of neighbors) {
-            let gNew = currentNode.g + neighbor.g;  // g mới cho neighbor
-            let fNew = gNew + neighbor.h;  // f mới cho neighbor
-        
-            // Tìm nếu đã tồn tại một nút đến `neighbor.to` trong closedList với giá trị g lớn hơn
-            let closedNode = closedList.find(node => node.to === neighbor.to);
-            if (closedNode && gNew < closedNode.g) {
-                closedList = closedList.filter(node => node.to !== neighbor.to);
-                neighbor.g = gNew;
-                neighbor.f = fNew;
-                neighbor.parent = currentNode;
-                openList.push(neighbor);
-                continue;
+            if (closedList.includes(neighbor)) {
+                continue; // Bỏ qua nếu đã thăm
             }
-        
-            // Tìm nếu đã tồn tại một nút đến `neighbor.to` trong openList với giá trị g lớn hơn
-            let openNode = openList.find(node => node.to === neighbor.to);
-            if (openNode) {
-                if (gNew < openNode.g) {
-                    openNode.g = gNew;
-                    openNode.f = fNew;
-                    openNode.parent = currentNode;
-                }
-            } else {
-                // Nếu chưa tồn tại trong openList, thêm vào với g và f mới
-                neighbor.g = gNew;
-                neighbor.f = fNew;
-                neighbor.parent = currentNode;
+
+            let gNew = currentNode.g + neighbor.g; // Tính giá trị g mới
+            let inOpenList = openList.some(node => node.to === neighbor.to);
+
+            if (!inOpenList) {
+                // Thêm đỉnh láng giềng vào danh sách mở và thiết lập nút cha
                 openList.push(neighbor);
+                neighbor.parent = currentNode;
+                update_f_g_h(neighbor, currentNode, neighbor.g);
+            } else if (gNew < neighbor.g) {
+                // Nếu tìm được đường đi ngắn hơn, cập nhật g, f, và nút cha
+                neighbor.g = gNew;
+                neighbor.f = neighbor.g + neighbor.h;
+                neighbor.parent = currentNode;
             }
         }
     }
-    
+
     console.log("Đường đi: ", path);
     return path;
 }
-
-
-
 
 // Hàm để hiển thị đường đi
 let way_goal1 = (path) => {

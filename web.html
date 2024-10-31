@@ -69,11 +69,14 @@
                 <div id="div_h">
                     <p class="h4"><strong>Danh sách heuristic</strong> </p>
                     <div class="shadow p-3 mb-5 bg-body-tertiary rounded d-inline-block">                    
-                        <table id="table_h" class="table">
-                            <tr>
+                        <table class="table">
+                            <thead>
                                 <th>Đỉnh</th>
                                 <th>Khoảng cách (heuristic)</th>
-                            </tr>                    
+                            </thead>              
+                            <tbody id="table_h">
+
+                            </tbody>      
                         </table>
                     </div>
                 </div>
@@ -81,18 +84,24 @@
                 <div id="div_g">
                     <p class="h4"> <strong>Danh sách cung</strong> </p>
                     <div class="shadow p-3 mb-5 bg-body-tertiary rounded d-inline-block" >                    
-                        <table id="table_not_g" class="table">
-                            <tr>
+                        <table id="table_not_g_dis" class="table">
+                            <thead>
                                 <th>Từ</th>
                                 <th>Đến</th>
-                            </tr>                   
+                            </thead>                
+                            <tbody id="table_not_g">
+
+                            </tbody>
                         </table>
-                        <table id="table_g" class="table">
-                                <tr>
+                        <table id="table_g_dis" class="table">
+                                <thead>
                                     <th>Từ</th>
                                     <th>Đến</th>
                                     <th>Khoảng cách (g)</th>
-                                </tr>                   
+                                </thead>           
+                                <tbody id="table_g">
+
+                                </tbody>      
                             </table>
                     </div>
                 </div>
@@ -110,6 +119,7 @@
                             <th>OPEN</th>
                             <th>CLOSE</th>
                         </tr>
+
                     </table>
                 </div>
             </div>
@@ -137,8 +147,6 @@
         </div> 
         <div id="wayToGoal"></div>
         <div id="cost_result"></div>
-
-        
     </main>
     
     <button id="reset_2" class="btn btn-secondary"> Reset</button>        
